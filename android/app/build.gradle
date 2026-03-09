@@ -7,7 +7,7 @@ plugins {
 android {
     namespace "com.goassistant"
     compileSdk 34
-    ndkVersion "25.1.8937393"
+    ndkVersion "26.1.10909125"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -24,7 +24,6 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
-        multiDexEnabled true
     }
 
     buildTypes {
