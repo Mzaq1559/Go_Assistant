@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="64dp"
+    android:layout_height="64dp">
+
+    <TextView
+        android:id="@+id/bubbleBtn"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="⚫"
+        android:textSize="28sp"
+        android:background="@drawable/bubble_bg"
+        android:elevation="8dp"/>
+
+</FrameLayout>
