@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Overlay permission (draw over other apps) -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <!-- Internet for Claude API -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Foreground service (keeps overlay alive) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-    <!-- Screenshot via MediaProjection -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
 
     <application
         android:label="Go Assistant"
@@ -20,7 +12,6 @@
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
 
-        <!-- Main Flutter activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -38,21 +29,10 @@
             </intent-filter>
         </activity>
 
-        <!-- Overlay foreground service -->
         <service
             android:name=".OverlayService"
             android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Game overlay"/>
-        </service>
-
-        <!-- MediaProjection activity (needed for screenshot permission dialog) -->
-        <activity
-            android:name=".ScreenCaptureActivity"
-            android:exported="false"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:foregroundServiceType="mediaProjection" />
 
         <meta-data
             android:name="flutterEmbedding"

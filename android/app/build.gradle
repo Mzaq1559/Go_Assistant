@@ -6,8 +6,8 @@ plugins {
 
 android {
     namespace "com.goassistant"
-    compileSdk flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdk 34
+    ndkVersion "25.1.8937393"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -21,15 +21,17 @@ android {
     defaultConfig {
         applicationId "com.goassistant"
         minSdk 26
-        targetSdk flutter.targetSdkVersion
-        versionCode flutter.versionCode
-        versionName flutter.versionName
+        targetSdk 34
+        versionCode 1
+        versionName "1.0.0"
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
             signingConfig signingConfigs.debug
             minifyEnabled false
+            shrinkResources false
         }
     }
 }
@@ -39,5 +41,7 @@ flutter {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+    implementation "androidx.core:core-ktx:1.12.0"
 }
