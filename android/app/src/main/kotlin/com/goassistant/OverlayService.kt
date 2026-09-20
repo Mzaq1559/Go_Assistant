@@ -10,6 +10,7 @@ import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.*
+import android.content.pm.ServiceInfo
 import android.util.Base64
 import android.util.DisplayMetrics
 import android.view.*
@@ -56,6 +57,7 @@ class OverlayService : Service() {
     private var screenW = 1080
     private var screenH = 1920
     private var density = 3.0f
+    private var viewsAdded = false
 
     override fun onCreate() {
         super.onCreate()
@@ -63,18 +65,36 @@ class OverlayService : Service() {
         wm = getSystemService(WINDOW_SERVICE) as WindowManager
         getScreenMetrics()
         createNotificationChannel()
-        startForeground(1, buildNotification())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                1,
+                buildNotification(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
+            )
+        } else {
+            startForeground(1, buildNotification())
+        }
         setupMediaProjection()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == "STOP") {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         apiKey    = intent?.getStringExtra("apiKey")    ?: ""
         turn      = intent?.getStringExtra("turn")      ?: "black"
         boardSize = intent?.getIntExtra("boardSize", 19) ?: 19
 
-        addBubble()
-        addOverlayCanvas()
-        return START_STICKY
+        if (!viewsAdded) {
+            addBubble()
+            addOverlayCanvas()
+            viewsAdded = true
+        } else {
+            updateBubbleState()
+        }
+        return START_NOT_STICKY
     }
 
     private fun getScreenMetrics() {
@@ -297,7 +317,9 @@ class OverlayService : Service() {
                     reason    = result.reasoning,
                 )
 
-                turn = if (turn == "black") "white" else "black"
+                if (result.move != "pass" && result.move != "resign") {
+                    turn = if (turn == "black") "white" else "black"
+                }
 
             } catch (e: Exception) {
                 showError(e.message ?: "Error")
@@ -464,6 +486,9 @@ The col_fraction and row_fraction must precisely indicate where on the SCREEN th
         virtualDisplay?.release()
         imageReader?.close()
         mediaProjection?.stop()
+        projectionData = null
+        viewsAdded = false
+        super.onDestroy()
     }
 
     override fun onBind(intent: Intent?) = null
